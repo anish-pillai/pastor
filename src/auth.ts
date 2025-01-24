@@ -1,13 +1,12 @@
-import NextAuth from "next-auth"
-import GitHubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
+import Google from 'next-auth/providers/google';
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { db } from '@/lib/db/schema';
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [GitHubProvider({
-    clientId: process.env.AUTH_GITHUB_ID,
-    clientSecret: process.env.AUTH_GITHUB_SECRET
-  }), GoogleProvider({
-    clientId: process.env.AUTH_GOOGLE_ID,
-    clientSecret: process.env.AUTH_GOOGLE_SECRET
-  })],
-})
+export const authOptions = {
+  adapter: DrizzleAdapter(db),
+  providers: [GitHub, Google],
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);
